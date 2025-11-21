@@ -64,4 +64,4 @@ Backend umożliwia dodawanie, edycję i usuwanie filmów.
 
 
 _________________________________________________________________________________
-# Projekt był zrobiony uczniami "ZSE Technikum nr. 13" na praktykach w 2026 roku.
+# Projekt był zrobiony uczniami "ZSE Technikum nr. 13" na praktykach w 2025 roku.
