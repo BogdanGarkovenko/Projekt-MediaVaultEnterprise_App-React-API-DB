@@ -41,21 +41,21 @@ Backend umożliwia dodawanie, edycję i usuwanie filmów.
 
 # **Podział pracy (3 osoby)**
 
-### **1 Frontend Developer (Bohdan Harkovenko) ** 
+### **1 Frontend Developer (Bohdan Harkovenko (BoGo) ) ** 
 
 * przygotowanie UI
 * routing
 * komponenty listy filmów i szczegółów
 * połączenie z API
 
-### **2 Backend Developer (Dominik ...) **
+### **2 Backend Developer (Dominik Subiet) **
 
 * budowa API
 * logika zapytań
 * walidacja
 * obsługa błędów
 
-### **3 Database Developer (Emilia ...) **
+### **3 Database Developer (Emilia Szefler) **
 
 * projekt bazy
 * tworzenie tabel
