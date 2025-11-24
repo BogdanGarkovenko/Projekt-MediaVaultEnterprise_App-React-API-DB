@@ -48,7 +48,7 @@ Backend umożliwia dodawanie, edycję i usuwanie filmów.
 * komponenty listy filmów i szczegółów
 * połączenie z API
 
-### **2 Backend Developer (Dominik Subiet) **
+### **2 Backend Developer (Dominik Subiel) **
 
 * budowa API
 * logika zapytań
