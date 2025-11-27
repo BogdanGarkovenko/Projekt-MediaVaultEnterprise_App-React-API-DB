@@ -2,12 +2,15 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, declarative_base
 from config import settings
 
+DATABASE_URL = settings.DATABASE_URL
+
 engine = create_engine(
-    settings.DATABASE_URL,
+    DATABASE_URL, 
     connect_args={"check_same_thread": False}
 )
 
-SessionLocal = sessionmaker(bind=engine, autocommit=False, autoflush=False)
+SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+
 Base = declarative_base()
 
 def get_db():
@@ -16,3 +19,6 @@ def get_db():
         yield db
     finally:
         db.close()
+def init_db():
+    import backend.models  # Import all models to register them with SQLAlchemy
+    Base.metadata.create_all(bind=engine)

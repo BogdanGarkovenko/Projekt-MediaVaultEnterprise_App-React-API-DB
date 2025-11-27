@@ -5,9 +5,12 @@ class Movie(Base):
     __tablename__ = "movies"
 
     id = Column(Integer, primary_key=True, index=True)
-    title = Column(String(100), nullable=False)
-    genre = Column(String(50), nullable=False)
+    title = Column(String, nullable=False)
+    studio = Column(String, nullable=True)
+    cast = Column(Text, nullable=True)
+    director = Column(String, nullable=True)
+    genre = Column(String, nullable=False)
     year = Column(Integer, nullable=False)
     rating = Column(Float, nullable=False)
     description = Column(Text, nullable=True)
-    poster_url = Column(String(255), nullable=True)
+    poster_url = Column(String, nullable=True)

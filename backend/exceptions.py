@@ -1,7 +1,12 @@
-from fastapi import HTTPException, status
+from fastapi import HTTPException
 
-def movie_not_found():
+def not_found(entity: str = "Obiekt"):
     raise HTTPException(
-        status_code=status.HTTP_404_NOT_FOUND,
-        detail="Movie not found"
+        status_code=404,
+        detail=f"{entity} nie został znaleziony."
+    )
+def bad_request(message: str = "Nieprawidłowe żądanie."):
+    raise HTTPException(
+        status_code=400,
+        detail=message
     )
