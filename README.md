@@ -97,7 +97,6 @@ A w nim:
 ```
 VITE_ADMIN_PASS=MegaAdmin01
 ```
-(To jest hasło) 
 
 ### 4. Uruchom oba serwery jednocześnie
 
