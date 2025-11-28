@@ -63,5 +63,61 @@ Backend umożliwia dodawanie, edycję i usuwanie filmów.
 * integracja z backendem
 
 
+# Szybkie uruchomienie projektu (Backend + Frontend jednocześnie)
+
+Projekt posiada uproszczony tryb startowy, który automatycznie uruchamia:
+
+* **Backend (FastAPI) na porcie 8000**
+* **Frontend (React + Vite) na porcie 5173**
+
+### 1. Zainstaluj zależności backendu
+
+```bash
+cd backend
+pip install -r requirements.txt
+```
+
+### 2. Zainstaluj zależności frontendu
+
+```bash
+cd ../frontend
+npm install
+```
+
+### 3. Ustaw hasło do panelu administratora
+
+W folderze **frontend/** utwórz plik:
+
+```
+.env
+```
+
+A w nim:
+
+```
+VITE_ADMIN_PASS=MegaAdmin01
+```
+
+### 4. Uruchom oba serwery jednocześnie
+
+W folderze **frontend/** uruchom:
+
+```bash
+npm run start:all
+```
+
+Ta komenda startuje:
+
+* **backend** → `http://localhost:8000`
+* **frontend** → `http://localhost:5173`
+
+### Dostęp do panelu Admina
+
+Po starcie przejdź na panel Admin
+
+Hasło Admina:
+MegaAdmin01
+
+
 _________________________________________________________________________________
 # Projekt był zrobiony uczniami "ZSE Technikum nr. 13" na praktykach w 2025/26 roku.
