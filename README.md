@@ -47,6 +47,8 @@ Backend umożliwia dodawanie, edycję i usuwanie filmów.
 * routing
 * komponenty listy filmów i szczegółów
 * połączenie z API
+* debuging
+* testing
 
 ### **2 Backend Developer (Dominik Subiel) **
 
@@ -62,29 +64,36 @@ Backend umożliwia dodawanie, edycję i usuwanie filmów.
 * wypełnianie przykładowymi danymi
 * integracja z backendem
 
+### **Szybkie uruchomienie projektu (Backend + Frontend jednocześnie)**
 
-# Szybkie uruchomienie projektu (Backend + Frontend jednocześnie)
+Projekt posiada tryb startowy, który automatycznie uruchamia:
 
-Projekt posiada uproszczony tryb startowy, który automatycznie uruchamia:
+* **Backend (FastAPI + SQLAlchemy + SQLite)** → `http://localhost:8000`
+* **Frontend (React + Vite)** → `http://localhost:5173`
 
-* **Backend (FastAPI) na porcie 8000**
-* **Frontend (React + Vite) na porcie 5173**
+Wymagane:
+✔ Python 3.10+
+✔ Node.js 18+
 
-### 1. Zainstaluj zależności backendu
+### Zainstaluj zależności backendu
+
+Przejdź do folderu backend:
 
 ```bash
 cd backend
 pip install -r requirements.txt
 ```
 
-### 2. Zainstaluj zależności frontendu
+### Zainstaluj zależności frontendu
+
+Wejdź do folderu frontend:
 
 ```bash
 cd ../frontend
 npm install
 ```
 
-### 3. Ustaw hasło do panelu administratora
+### Ustaw dane do logowania administratora
 
 W folderze **frontend/** utwórz plik:
 
@@ -92,24 +101,27 @@ W folderze **frontend/** utwórz plik:
 .env
 ```
 
-A w nim:
+W środku wpisz:
 
 ```
 VITE_ADMIN_PASS=MegaAdmin01
 ```
+*(Możesz zmienić hasło — frontend sam używa go w logowaniu do panelu Admin.)*
 
-### 4. Uruchom oba serwery jednocześnie
+### Uruchom backend + frontend jednocześnie
 
-W folderze **frontend/** uruchom:
+Przejdź do folderu frontend i wpisz:
 
 ```bash
 npm run start:all
 ```
 
-Ta komenda startuje:
+Ta komenda uruchamia jednocześnie:
 
-* **backend** → `http://localhost:8000`
-* **frontend** → `http://localhost:5173`
+| Serwis            | Adres lokalny                                  |
+| ----------------- | ---------------------------------------------- |
+| Backend (FastAPI) | [http://localhost:8000](http://localhost:8000) |
+| Frontend (React)  | [http://localhost:5173](http://localhost:5173) |
 
 ### Dostęp do panelu Admina
 
