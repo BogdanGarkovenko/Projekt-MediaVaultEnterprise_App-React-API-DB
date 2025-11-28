@@ -2,6 +2,4 @@ fastapi
 uvicorn
 sqlalchemy
 pydantic
-pydantic-settings
-python-multipart
-lucide-react
+python-dotenv

@@ -1,6 +1,9 @@
-from pydantic_settings import BaseSettings
+from dotenv import load_dotenv
+import os
 
-class Settings(BaseSettings):
-    DATABASE_URL: str = "sqlite:///./movies.db"
+load_dotenv()
 
-settings = Settings()
+ADMIN_USER = os.getenv("ADMIN_USER")
+ADMIN_PASS = os.getenv("ADMIN_PASS")
+JWT_SECRET = os.getenv("JWT_SECRET")
+JWT_ALG = os.getenv("JWT_ALG", "HS256")

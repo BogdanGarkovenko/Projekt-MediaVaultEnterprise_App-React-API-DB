@@ -1,115 +1,87 @@
-from fastapi import FastAPI, Depends, Request
-from sqlalchemy.orm import Session
+from fastapi import FastAPI, Depends, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.middleware.trustedhost import TrustedHostMiddleware
+from sqlalchemy.orm import Session
 from typing import Optional
 
-import crud
-from database import Base, engine, get_db
+from database import SessionLocal, engine
+import models
+from models import Movie
 from schemas import MovieCreate, MovieUpdate, MovieOut
 
+models.Base.metadata.create_all(bind=engine)
 
-app = FastAPI(title="MediaVault API")
+app = FastAPI(title="MediaVault Backend")
 
-# -----------------------
-# DATABASE INIT
-# -----------------------
-Base.metadata.create_all(bind=engine)
-
-
-# -----------------------
-# CORS (frontend → backend)
-# -----------------------
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[
-        "http://localhost:5173",
-        "http://127.0.0.1:5173",
-        "http://localhost:3000",
-    ],
+    allow_origins=["http://localhost:5173", "http://127.0.0.1:5173", "http://localhost:3000", "http://127.0.0.1:3000"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
-# -----------------------
-# Trusted Hosts
-# -----------------------
-app.add_middleware(
-    TrustedHostMiddleware,
-    allowed_hosts=["localhost", "127.0.0.1", "*"]
-)
+def get_db():
+    db = SessionLocal()
+    try:
+        yield db
+    finally:
+        db.close()
 
-
-# -----------------------
-# GLOBAL ANTI-XSS FILTER
-# (broni przed <script>, event handlers w URL, itp.)
-# -----------------------
-def sanitize_query(value: Optional[str]) -> Optional[str]:
-    if value is None:
-        return None
-    return (
-        value.replace("<", "")
-             .replace(">", "")
-             .replace("script", "")
-             .replace("onerror", "")
-             .replace("onload", "")
-    )
-
-
-# -----------------------
-# MOVIE ENDPOINTS
-# -----------------------
 
 @app.get("/movies", response_model=list[MovieOut])
-def get_movies(
+def read_movies(
     db: Session = Depends(get_db),
     search: Optional[str] = None,
     genre: Optional[str] = None,
-    director: Optional[str] = None,
-    year: Optional[int] = None,
-    min_rating: Optional[float] = None,
-    max_rating: Optional[float] = None,
     sort_by: Optional[str] = None,
     order: Optional[str] = "asc",
     page: int = 1,
-    limit: int = 12,
+    limit: int = 200
 ):
-    # sanitize GET params
-    search = sanitize_query(search)
-    genre = sanitize_query(genre)
-    director = sanitize_query(director)
-    sort_by = sanitize_query(sort_by)
-    order = sanitize_query(order)
-
-    return crud.get_movies_filtered(
-        db=db,
-        search=search,
-        genre=genre,
-        director=director,
-        year=year,
-        min_rating=min_rating,
-        max_rating=max_rating,
-        sort_by=sort_by,
-        order=order,
-        page=page,
-        limit=limit,
-    )
+    query = db.query(Movie)
+    if search:
+        query = query.filter(Movie.title.ilike(f"%{search}%"))
+    if genre:
+        query = query.filter(Movie.genre.ilike(f"%{genre}%"))
+    if sort_by in ["title", "year", "rating"]:
+        col = getattr(Movie, sort_by)
+        query = query.order_by(col.desc() if order == "desc" else col.asc())
+    offset = (page - 1) * limit
+    return query.offset(offset).limit(limit).all()
 
 
 @app.post("/movies", response_model=MovieOut)
 def create_movie(movie: MovieCreate, db: Session = Depends(get_db)):
-    return crud.create_movie(db=db, movie=movie)
+    db_movie = Movie(**movie.dict())
+    db.add(db_movie)
+    db.commit()
+    db.refresh(db_movie)
+    return db_movie
 
+@app.get("/movies/{movie_id}", response_model=MovieOut)
+def get_movie(movie_id: int, db: Session = Depends(get_db)):
+    movie = db.query(Movie).filter(Movie.id == movie_id).first()
+    if not movie:
+        raise HTTPException(status_code=404, detail="Movie not found")
+    return movie
 
 @app.put("/movies/{movie_id}", response_model=MovieOut)
 def update_movie(movie_id: int, movie: MovieUpdate, db: Session = Depends(get_db)):
-    return crud.update_movie(db=db, movie_id=movie_id, movie=movie)
+    db_movie = db.query(Movie).filter(Movie.id == movie_id).first()
+    if not db_movie:
+        raise HTTPException(status_code=404, detail="Movie not found")
+    for key, value in movie.dict(exclude_unset=True).items():
+        setattr(db_movie, key, value)
+    db.commit()
+    db.refresh(db_movie)
+    return db_movie
 
 
 @app.delete("/movies/{movie_id}")
 def delete_movie(movie_id: int, db: Session = Depends(get_db)):
-    return crud.delete_movie(db=db, movie_id=movie_id)
-@app.get("/movies/{movie_id}", response_model=MovieOut)
-def get_movie(movie_id: int, db: Session = Depends(get_db)):
-    return crud.get_movie(db=db, movie_id=movie_id)
+    db_movie = db.query(Movie).filter(Movie.id == movie_id).first()
+    if not db_movie:
+        raise HTTPException(status_code=404, detail="Movie not found")
+    db.delete(db_movie)
+    db.commit()
+    return {"status": "ok"}
